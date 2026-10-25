@@ -1,0 +1,497 @@
+/* ==========================================================================
+   CSS Design System — UK Wind Forecast Accuracy Dashboard
+   All styles driven by CSS custom properties. No third-party CSS frameworks.
+   ========================================================================== */
+
+:root {
+  /* Surface & Background Colors */
+  --bg-primary: #0b0f19;
+  --bg-secondary: #111827;
+  --bg-card: #1e293b;
+  --bg-card-hover: #243248;
+  --bg-card-subtle: rgba(30, 41, 59, 0.6);
+
+  /* Border Colors */
+  --border-subtle: #1e293b;
+  --border-card: #334155;
+  --border-highlight: #475569;
+
+  /* Typography Colors */
+  --text-primary: #f8fafc;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+  --text-inverse: #0f172a;
+
+  /* Brand & Curve Accents */
+  --color-forecast: #38bdf8;       /* Electric blue for forecast */
+  --color-actual: #f59e0b;         /* Muted amber for actuals */
+  --color-cyan: #06b6d4;           /* Cyan accent */
+  --color-success: #10b981;        /* Emerald green */
+  --color-warning: #f59e0b;        /* Amber warning */
+  --color-danger: #ef4444;         /* Crimson red */
+
+  /* Accuracy 3-Tier Palette (Dynamic based on data range) */
+  --tier-good: #38bdf8;            /* Low error: Electric blue */
+  --tier-mod: #f59e0b;             /* Moderate error: Amber */
+  --tier-bad: #ef4444;             /* High error: Crimson red */
+
+  /* Typography */
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+
+  /* Spacing & Radii */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-full: 9999px;
+  --shadow-card: 0 4px 20px -2px rgba(0, 0, 0, 0.5);
+  --shadow-glow-blue: 0 0 20px rgba(56, 189, 248, 0.15);
+  --transition-fast: 150ms ease;
+  --transition-normal: 250ms ease;
+}
+
+/* Base Resets */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  line-height: 1.5;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Tabular numbers for all metric values */
+.tabular-nums {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+}
+
+/* Layout Utilities */
+.app-container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 1.5rem 2rem 3rem 2rem;
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.page-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.page-subtitle {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  margin-top: 0.25rem;
+}
+
+/* Styled Select Dropdown (Jan 01–31 2026) */
+.custom-select {
+  appearance: none;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-card);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  font-weight: 500;
+  padding: 0.55rem 2.5rem 0.55rem 1rem;
+  cursor: pointer;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2394a3b8'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  background-size: 1rem 1rem;
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.custom-select:hover {
+  border-color: var(--border-highlight);
+}
+
+.custom-select:focus {
+  outline: none;
+  border-color: var(--color-forecast);
+  box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.2);
+}
+
+/* Card Row */
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.25rem;
+  margin-bottom: 2rem;
+}
+
+.metric-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-card);
+  border-radius: var(--radius-md);
+  padding: 1.25rem 1.5rem;
+  box-shadow: var(--shadow-card);
+  transition: transform var(--transition-fast), border-color var(--transition-fast);
+  position: relative;
+  overflow: hidden;
+}
+
+.metric-card:hover {
+  border-color: var(--border-highlight);
+}
+
+.metric-label {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+  margin-bottom: 0.5rem;
+}
+
+.metric-value {
+  font-size: 1.875rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  display: flex;
+  align-items: baseline;
+  gap: 0.35rem;
+}
+
+.metric-unit {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.metric-subtext {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-top: 0.4rem;
+}
+
+/* Difference Card Variants */
+.metric-card.diff-alert {
+  background: rgba(239, 68, 68, 0.12);
+  border-color: rgba(239, 68, 68, 0.4);
+}
+.metric-card.diff-alert .metric-value {
+  color: #fca5a5;
+}
+
+.metric-card.diff-ok {
+  background: rgba(16, 185, 129, 0.12);
+  border-color: rgba(16, 185, 129, 0.4);
+}
+.metric-card.diff-ok .metric-value {
+  color: #6ee7b7;
+}
+
+/* Vintage & Audit Badge Bar */
+.audit-badge-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(17, 24, 39, 0.7);
+  border: 1px solid var(--border-card);
+  border-radius: var(--radius-sm);
+  padding: 0.65rem 1rem;
+  margin-bottom: 1.5rem;
+  font-size: 0.8125rem;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.audit-badge-left {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.audit-pulse-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: var(--color-success);
+  box-shadow: 0 0 8px var(--color-success);
+}
+
+.audit-badge-content {
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+}
+
+.audit-badge-highlight {
+  color: var(--color-forecast);
+  font-weight: 600;
+}
+
+/* Chart Canvas Containers */
+.chart-container {
+  background: var(--bg-card);
+  border: 1px solid var(--border-card);
+  border-radius: var(--radius-md);
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  position: relative;
+  min-height: 420px;
+}
+
+.chart-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.25rem;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.chart-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.chart-legend-custom {
+  display: flex;
+  gap: 1.25rem;
+  align-items: center;
+  font-size: 0.8125rem;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  color: var(--text-secondary);
+}
+
+.legend-line {
+  width: 14px;
+  height: 3px;
+  border-radius: 2px;
+}
+
+/* Loading & Error Overlays */
+.chart-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: rgba(15, 23, 42, 0.75);
+  backdrop-filter: blur(4px);
+  border-radius: var(--radius-md);
+  z-index: 10;
+  padding: 2rem;
+  text-align: center;
+}
+
+.shimmer-bar {
+  width: 240px;
+  height: 4px;
+  background: var(--border-card);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+  position: relative;
+  margin-bottom: 1rem;
+}
+
+.shimmer-bar::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 40%;
+  background: linear-gradient(90deg, transparent, var(--color-forecast), transparent);
+  animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(300%); }
+}
+
+.overlay-message {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+}
+
+/* Error Card Inside Overlay */
+.error-card {
+  max-width: 480px;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.35);
+  border-radius: var(--radius-md);
+  padding: 1.5rem;
+}
+
+.error-title {
+  color: #fca5a5;
+  font-weight: 600;
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.error-detail {
+  color: var(--text-secondary);
+  font-size: 0.8125rem;
+  margin-bottom: 1rem;
+  font-family: var(--font-mono);
+}
+
+.btn-retry {
+  background: var(--bg-card);
+  color: var(--text-primary);
+  border: 1px solid var(--border-highlight);
+  border-radius: var(--radius-sm);
+  padding: 0.45rem 1.1rem;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.btn-retry:hover {
+  background: var(--border-card);
+  border-color: var(--color-forecast);
+}
+
+/* Executive Insight Banner */
+.insight-banner {
+  background: linear-gradient(135deg, rgba(30, 41, 59, 0.9) 0%, rgba(15, 23, 42, 0.95) 100%);
+  border: 1px solid var(--border-card);
+  border-left: 4px solid var(--color-actual);
+  border-radius: var(--radius-md);
+  padding: 1.25rem 1.5rem;
+  margin-bottom: 2rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.insight-tag {
+  background: rgba(245, 158, 11, 0.15);
+  color: var(--color-actual);
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  padding: 0.2rem 0.55rem;
+  border-radius: var(--radius-sm);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+}
+
+.insight-text {
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--text-primary);
+  line-height: 1.45;
+}
+
+/* Navigation Bar */
+.navbar {
+  background-color: var(--bg-secondary);
+  border-bottom: 1px solid var(--border-subtle);
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+
+.navbar-inner {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0.85rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.navbar-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  text-decoration: none;
+  color: var(--text-primary);
+  font-weight: 700;
+  font-size: 1.05rem;
+}
+
+.brand-badge {
+  background: rgba(56, 189, 248, 0.12);
+  color: var(--color-forecast);
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  padding: 0.15rem 0.45rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(56, 189, 248, 0.3);
+}
+
+.navbar-nav {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.nav-link {
+  color: var(--text-secondary);
+  text-decoration: none;
+  font-size: 0.875rem;
+  font-weight: 500;
+  padding: 0.4rem 0.75rem;
+  border-radius: var(--radius-sm);
+  transition: all var(--transition-fast);
+}
+
+.nav-link:hover {
+  color: var(--text-primary);
+}
+
+.nav-link.active {
+  color: var(--color-forecast);
+  background: rgba(56, 189, 248, 0.1);
+}
+
+.health-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  padding: 0.25rem 0.6rem;
+  border-radius: var(--radius-full);
+  background: var(--bg-card);
+  border: 1px solid var(--border-card);
+}
+
+.health-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+}
+.health-dot.ok {
+  background-color: var(--color-success);
+  box-shadow: 0 0 6px var(--color-success);
+}
+.health-dot.err {
+  background-color: var(--color-danger);
+  box-shadow: 0 0 6px var(--color-danger);
+}

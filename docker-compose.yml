@@ -1,0 +1,45 @@
+services:
+  # FastAPI backend service
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: wind-dashboard-backend
+    ports:
+      - "8000:8000"
+    environment:
+      - FRONTEND_URL=http://localhost:3000
+      - CORS_ORIGINS=http://localhost:3000
+      - ELEXON_BASE_URL=https://data.elexon.co.uk/bmrs/api/v1
+      - DB_PATH=/data/cache.db
+    volumes:
+      # Named volume mounted at /data persists the SQLite cache (cache.db) across container restarts.
+      # We use /data, not /app, so the volume does not overlay the application code directory.
+      - sqlite_data:/data
+    networks:
+      - app-network
+    restart: unless-stopped
+
+  # React + Nginx frontend service
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: wind-dashboard-frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+    networks:
+      - app-network
+    restart: unless-stopped
+
+# Named volume definition for persistent SQLite storage
+volumes:
+  sqlite_data:
+    driver: local
+
+# Bridge network allowing inter-container resolution by service name
+networks:
+  app-network:
+    driver: bridge
